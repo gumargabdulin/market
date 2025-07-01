@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\ProductParent\StoreRequest;
+use App\Http\Requests\Admin\ProductParent\UpdateRequest;
+use App\Http\Resources\ProductParent\ProductParentResource;
 use App\Models\ProductParent;
+use App\Services\ProductParentService;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 
 class ProductParentController extends Controller
@@ -13,7 +18,9 @@ class ProductParentController extends Controller
      */
     public function index()
     {
-        //
+        $productParents = ProductParent::all();
+        $productParents = ProductParentResource::collection($productParents)->resolve();
+        return inertia('Admin/ProductParent/Index', compact('productParents'));
     }
 
     /**
@@ -21,15 +28,17 @@ class ProductParentController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Admin/ProductParent/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        //
+        $data = $request->validated();
+        $productParent = ProductParentService::store();
+        return ProductParentResource::make($productParent)->resolve();
     }
 
     /**
@@ -37,7 +46,8 @@ class ProductParentController extends Controller
      */
     public function show(ProductParent $productParent)
     {
-        //
+        $productParent = ProductParentResource::make($productParent)->resolve();
+        return inertia('Admin/ProductParent/Show', compact('productParent'));
     }
 
     /**
@@ -45,22 +55,25 @@ class ProductParentController extends Controller
      */
     public function edit(ProductParent $productParent)
     {
-        //
+        $productParent = ProductParentResource::make($productParent)->resolve();
+        return inertia('Admin/ProductParent/Edit', compact('productParent'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ProductParent $productParent)
+    public function update(UpdateRequest $request, ProductParent $productParent)
     {
-        //
+        $data = $request->validated();
+        $productParent = ProductParentService::update($productParent, $data);
+        return ProductParentResource::make($productParent)->resolve();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(ProductParent $productParent)
     {
-        //
+        $productParent->delete();
+        return response()->json([
+            'message' => 'ProductParent deleted successfully'
+        ], \Illuminate\Http\Response::HTTP_OK);
     }
 }

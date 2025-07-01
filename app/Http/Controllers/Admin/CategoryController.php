@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Category\StoreRequest;
+use App\Http\Requests\Admin\Category\UpdateRequest;
+use App\Http\Resources\Category\CategoryResource;
 use App\Models\Category;
+use App\Services\CategoryService;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -13,7 +17,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::all();
+        $categories = CategoryResource::collection($categories)->resolve();
+        return inertia('Admin/Category/Index', compact('categories'));
     }
 
     /**
@@ -21,15 +27,17 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Admin/Category/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        //
+        $data = $request->validated();
+        $category = CategoryService::store();
+        return CategoryResource::make($category)->resolve();
     }
 
     /**
@@ -37,7 +45,8 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        $category = CategoryResource::make($category)->resolve();
+        return inertia('Admin/Category/Show', compact('category'));
     }
 
     /**
@@ -45,22 +54,25 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+        $category = CategoryResource::make($category)->resolve();
+        return inertia('Admin/Category/Edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(UpdateRequest $request, Category $category)
     {
-        //
+        $data = $request->validated();
+        $category = CategoryService::update($category, $data);
+        return CategoryResource::make($category)->resolve();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return response()->json([
+            'message' => 'Category deleted successfully'
+        ], \Illuminate\Http\Response::HTTP_OK);
     }
 }

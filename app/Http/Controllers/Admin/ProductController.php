@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Product\StoreRequest;
+use App\Http\Requests\Admin\Product\UpdateRequest;
+use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
+use App\Services\ProductService;
+use http\Env\Response;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -13,7 +18,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::all();
+        $products = ProductResource::collection($products)->resolve();
+        return inertia('Admin/Product/Index', compact('products'));
     }
 
     /**
@@ -21,15 +28,17 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Admin/Product/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        //
+        $data = $request->validated();
+        $product = ProductService::store();
+        return ProductResource::make($product)->resolve();
     }
 
     /**
@@ -37,7 +46,8 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        $product = ProductResource::make($product)->resolve();
+        return inertia('Admin/Product/Show', compact('product'));
     }
 
     /**
@@ -45,22 +55,25 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        $product = ProductResource::make($product)->resolve();
+        return inertia('Admin/Product/Edit', compact('product'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateRequest $request, Product $product)
     {
-        //
+        $data = $request->validated();
+        $product = ProductService::update($product, $data);
+        return ProductResource::make($product)->resolve();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        return response()->json([
+            'message' => 'Product deleted successfully'
+        ], \Illuminate\Http\Response::HTTP_OK);
     }
 }
