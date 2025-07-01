@@ -24,7 +24,7 @@ import {Link} from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 
 export default {
-    name: "Create",
+    name: "Edit",
     layout: AdminLayout,
     props: {
         categories: Array
