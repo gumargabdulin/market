@@ -27,7 +27,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return inertia('Admin/Category/Create');
+        $categories = CategoryResource::make(Category::all())->resolve();
+        return inertia('Admin/Category/Create', compact('categories'));
     }
 
     /**
@@ -36,7 +37,7 @@ class CategoryController extends Controller
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
-        $category = CategoryService::store();
+        $category = CategoryService::store($data);
         return CategoryResource::make($category)->resolve();
     }
 

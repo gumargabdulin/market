@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Category;
+
 class CategoryService
 {
-        public static function store(array $data): Category
+    public static function store(array $data): Category
     {
         return Category::create($data);
     }
