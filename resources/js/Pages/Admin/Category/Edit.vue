@@ -14,7 +14,7 @@
                 </select>
             </div>
             <div class="mb-4">
-                <a href="#" @click.prevent="storeCategory" class="inline-block py-2 block bg-indigo-500 border border-b-indigo-400 p-2" >Создать</a>
+                <a href="#" @click.prevent="storeCategory" class="inline-block py-2 block bg-indigo-500 border border-b-indigo-400 p-2" >Обновить</a>
             </div>
         </div>
     </div>
@@ -27,26 +27,17 @@ export default {
     name: "Edit",
     layout: AdminLayout,
     props: {
+        category: Object,
         categories: Array
     },
     components: {
         Link
     },
-    data() {
-      return {
-        category:{
-            parent_id:null
-        }
-      }
-    },
     methods:{
         storeCategory(){
-            axios.post(route('admin.categories.store'), this.category)
+            axios.patch( route('admin.categories.update', this.category), this.category)
                 .then(res => {
                     // console.log(res);
-                    this.category={
-                        parent_id: null
-                    }
                 })
         }
     }
