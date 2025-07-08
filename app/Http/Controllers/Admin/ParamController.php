@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Param\ParamFilterTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Param\StoreRequest;
 use App\Http\Requests\Admin\Param\UpdateRequest;
@@ -19,6 +20,7 @@ class ParamController extends Controller
     {
         $params = Param::all();
         $params = ParamResource::collection($params)->resolve();
+//        dd($params);
         return inertia('Admin/Param/Index', compact('params'));
     }
 
@@ -27,7 +29,8 @@ class ParamController extends Controller
      */
     public function create()
     {
-        return inertia('Admin/Param/Create');
+        $filterTypes= ParamFilterTypeEnum::collection();
+        return inertia('Admin/Param/Create', compact('filterTypes'));
     }
 
     /**
@@ -36,7 +39,7 @@ class ParamController extends Controller
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
-        $param = ParamService::store();
+        $param = ParamService::store($data);
         return ParamResource::make($param)->resolve();
     }
 
@@ -54,8 +57,9 @@ class ParamController extends Controller
      */
     public function edit(Param $param)
     {
+        $filterTypes= ParamFilterTypeEnum::collection();
         $param = ParamResource::make($param)->resolve();
-        return inertia('Admin/Param/Edit', compact('param'));
+        return inertia('Admin/Param/Edit', compact('param', 'filterTypes'));
     }
 
     /**
