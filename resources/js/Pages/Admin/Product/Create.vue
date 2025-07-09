@@ -34,9 +34,9 @@
                     <option v-for="product_group in productGroups" :value="product_group.id">{{product_group.title}}</option>
                 </select>
             </div>
-<!--            <div class="mb-4">-->
-<!--                <input type="file" v-model="entries.images" class="block border border-gray-700 p-2 w-1/4">-->
-<!--            </div>-->
+            <div class="mb-4">
+                <input @change="setImages" multiple type="file" class="block border border-gray-700 p-2 w-1/4">
+            </div>
 <!--            <div class="mb-4">-->
 <!--                <select v-model="entries.params" class="w-1/4">-->
 <!--                    <option :value="null" disabled selected>Выберете категорию</option>-->
@@ -77,7 +77,11 @@ export default {
     },
     methods:{
         storePruduct(){
-            axios.post(route('admin.products.store'), this.entries)
+            axios.post(route('admin.products.store'), this.entries, {
+                headers:{
+                    "Content-Type": "multipart/form-data"
+                }
+            })
                 .then(res => {
                     console.log(res);
                     this.entries.product={
@@ -85,6 +89,9 @@ export default {
                         product_group_id: null
                     }
                 })
+        },
+        setImages(e){
+            this.entries.images = e.target.files
         }
     }
 }

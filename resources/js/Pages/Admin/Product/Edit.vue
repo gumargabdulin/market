@@ -37,6 +37,16 @@
                     <option v-for="product_group in productGroups" :value="product_group.id">{{product_group.title}}</option>
                 </select>
             </div>
+            <div class="mb-4">
+                <input @change="setImages" multiple type="file" class="block border border-gray-700 p-2 w-1/4">
+            </div>
+            <div>
+                <div class="flex justify-between">
+                    <div v-for="image in product.images">
+                        <img :src="image.url" :alt="product.title">
+                    </div>
+                </div>
+            </div>
 <!--            <div class="mb-4">-->
 <!--                <input type="file" v-model="entries.images" class="block border border-gray-700 p-2 w-1/4">-->
 <!--            </div>-->
@@ -72,7 +82,7 @@ export default {
           success: false,
           entries:{
               product:this.product,
-              // images:null,
+              images:null,
               // params:[]
           }
       }
@@ -83,6 +93,9 @@ export default {
                 .then(res => {
                     this.success=true
                 })
+        },
+        setImages(e){
+            this.entries.images = e.target.files
         }
     },
     watch:{
