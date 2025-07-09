@@ -83,7 +83,6 @@ export default {
                 }
             })
                 .then(res => {
-                    console.log(res);
                     this.entries.product={
                         category_id: null,
                         product_group_id: null

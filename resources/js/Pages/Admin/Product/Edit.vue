@@ -101,7 +101,10 @@ export default {
             })
                 .then(res => {
                     this.product.images = res.data.images
-                    this.success=true
+                    this.$nextTick(() => {
+                        this.success = true
+                    })
+
                 })
         },
         setImages(e){
@@ -112,12 +115,15 @@ export default {
                 .then(
                     res => {
                         this.product.images = this.product.images.filter(productImage => productImage.id !== image.id)
+                        this.$nextTick(() => {
+                            this.success = true
+                        })
                     }
                 )
         }
     },
     watch:{
-        products:{
+        product:{
             handler(new_val, old_val){
                 this.success =  false
             },

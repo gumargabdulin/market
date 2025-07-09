@@ -24,6 +24,7 @@ class ProductResource extends JsonResource
             'old_price' => $this->old_price,
             'category_id' => $this->category_id,
             'product_group_id' => $this->product_group_id,
+            'qty' => $this->qty,
             'images' => ImageResource::collection($this->images)->resolve(),
         ];
     }
