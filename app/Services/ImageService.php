@@ -16,4 +16,9 @@ class ImageService
             ]);
         }
    }
+
+   public static function destroy($image): void
+   {
+        Storage::disk('public')->delete($image->path);
+   }
 }

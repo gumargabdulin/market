@@ -41,11 +41,15 @@
                 <input @change="setImages" multiple type="file" class="block border border-gray-700 p-2 w-1/4">
             </div>
             <div>
-                <div class="flex justify-between">
-                    <div v-for="image in product.images">
-                        <img :src="image.url" :alt="product.title">
+                <div class="grid grid-cols-3">
+                    <div v-for="image in product.images" class="mb-4">
+                        <img :src="image.url" :alt="product.title" class="mb-2">
+                        <div class="text-center">
+                            <a @click.prevent="deleteImage(image)" href="#" class="inline-block px-2 py-1 px-2 text-sm bg-red-400 text-gray-50 border border-red-600">Удалить</a>
+                        </div>
                     </div>
                 </div>
+
             </div>
 <!--            <div class="mb-4">-->
 <!--                <input type="file" v-model="entries.images" class="block border border-gray-700 p-2 w-1/4">-->
@@ -83,19 +87,33 @@ export default {
           entries:{
               product:this.product,
               images:null,
+              _method: 'patch',
               // params:[]
           }
       }
     },
     methods:{
         updateProduct(){
-            axios.patch( route('admin.products.update', this.product.id), this.entries)
+            axios.post( route('admin.products.update', this.product.id), this.entries, {
+                headers:{
+                    "Content-Type": "multipart/form-data"
+                }
+            })
                 .then(res => {
+                    this.product.images = res.data.images
                     this.success=true
                 })
         },
         setImages(e){
             this.entries.images = e.target.files
+        },
+        deleteImage(image){
+            axios.delete(route('admin.images.destroy', image.id))
+                .then(
+                    res => {
+                        this.product.images = this.product.images.filter(productImage => productImage.id !== image.id)
+                    }
+                )
         }
     },
     watch:{
