@@ -9,7 +9,7 @@ class ProductService
     public static function store(array $data): Product
     {
         $product = Product::create($data['product']);
-        ProductService::arrachBatchParams($product, $data);
+        ProductService::attachBatchParams($product, $data);
         ImageService::storeBatch($product, $data);
         return $product;
     }
@@ -17,14 +17,21 @@ class ProductService
     public static function update(Product $product, array $data): Product
     {
         $product->update($data['product']);
+        ProductService::syncBatchParams($product, $data);
         ImageService::storeBatch($product, $data);
         return $product->fresh();
     }
 
-    public static function arrachBatchParams(Product $product, array $data): void
+    public static function attachBatchParams(Product $product, array $data): void
     {
         foreach ($data['params'] as $param) {
-            $product->params()->attach($param['id'], ['value' => $param['id']]);
+            $product->params()->attach($param['id'], ['value' => $param['value']]);
         }
+    }
+
+    public static function syncBatchParams(Product $product, array $data): void
+    {
+        $product->params()->detach();
+        ProductService::attachBatchParams($product, $data);
     }
 }

@@ -48,7 +48,7 @@
                 </select>
             </div>
             <div class="mb-4">
-                <input @change="setImages" multiple type="file" class="block border border-gray-700 p-2 w-1/4">
+                <input ref="image_input" @change="setImages" multiple type="file" class="block border border-gray-700 p-2 w-1/4">
             </div>
             <div class="mb-4 flex">
                 <div class="mr-2">
@@ -67,12 +67,19 @@
                 </div>
             </div>
             <div class="mb-4">
-                <div v-for="paramEntries in entries.params">
-                    {{ paramEntries.title }} - {{ paramEntries.value }}
+                <div v-for="paramEntries in entries.params" class="flex items-center mb-2">
+                    <div class="mr-2">
+                        {{ paramEntries.title }} - {{ paramEntries.value }}
+                    </div>
+                    <div>
+                        <svg @click.prevent="removeParam(paramEntries)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="cursor-pointer size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </div>
                 </div>
             </div>
             <div class="mb-4">
-                <a href="#" @click.prevent="storePruduct"
+                <a href="#" @click.prevent="storeProduct"
                    class="inline-block py-2 block bg-indigo-500 border border-b-indigo-400 p-2">Создать</a>
             </div>
         </div>
@@ -109,17 +116,22 @@ export default {
         }
     },
     methods: {
-        storePruduct() {
+        storeProduct() {
             axios.post(route('admin.products.store'), this.entries, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
             })
                 .then(res => {
-                    this.entries.product = {
-                        category_id: null,
-                        product_group_id: null
+                    this.entries = {
+                        product: {
+                            category_id: null,
+                            product_group_id: null
+                        },
+                        images: null,
+                        params: []
                     }
+                    this.$refs.image_input.value=null
                 })
         },
         setImages(e) {
@@ -131,6 +143,9 @@ export default {
                 title: this.paramOption.paramObj.title,
                 value: this.paramOption.value,
             })
+        },
+        removeParam(paramEntries){
+            this.entries.params = this.entries.params.filter(param => param !== paramEntries)
         }
     }
 }
