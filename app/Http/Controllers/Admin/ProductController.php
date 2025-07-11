@@ -24,9 +24,14 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::whereNotNull('parent_id')->get();
+        $products = Product::whereNull('parent_id')->get();
         $products = ProductResource::collection($products)->resolve();
         return inertia('Admin/Product/Index', compact('products'));
+    }
+
+    public function indexChild(Product $product)
+    {
+        return $product = ProductResource::collection($product->children)->resolve();
     }
 
     /**

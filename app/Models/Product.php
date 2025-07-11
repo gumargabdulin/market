@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
 #[ObservedBy(ProductObserver::class)]
 class Product extends Model
 {
@@ -25,5 +26,6 @@ class Product extends Model
     {
         return $this->hasMany(Product::class, 'parent_id', 'id');
     }
+
 
 }
