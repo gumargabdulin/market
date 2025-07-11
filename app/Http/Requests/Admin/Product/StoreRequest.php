@@ -23,11 +23,13 @@ class StoreRequest extends FormRequest
             'product.category_id' => 'required|integer|exists:categories,id',
             'product.product_group_id' => 'required|integer|exists:product_groups,id',
             'product.qty' => 'required|integer',
+            'product.parent_id'  => 'nullable|integer|exists:products,id',
             'images' => 'nullable|array',
             'images.*' => 'image|file',
             'params' => 'nullable|array',
             'params.*.id' => 'required|integer|exists:params,id',
             'params.*.value' => 'required|string',
+
         ];
     }
 

@@ -24,7 +24,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::whereNotNull('parent_id')->get();
         $products = ProductResource::collection($products)->resolve();
         return inertia('Admin/Product/Index', compact('products'));
     }
@@ -38,6 +38,15 @@ class ProductController extends Controller
         $productGroups = ProductGroupResource::collection(ProductGroup::all())->resolve();
         $params = ParamResource::collection(Param::all())->resolve();
         return inertia('Admin/Product/Create', compact('categories', 'productGroups', 'params'));
+    }
+
+    public function createChild(Product $product)
+    {
+        $categories = CategoryResource::collection(Category::all())->resolve();
+        $productGroups = ProductGroupResource::collection(ProductGroup::all())->resolve();
+        $params = ParamResource::collection(Param::all())->resolve();
+        $product = ProductResource::make($product)->resolve();
+        return inertia('Admin/Product/CreateChild', compact('categories', 'productGroups', 'params', 'product'));
     }
 
     /**
