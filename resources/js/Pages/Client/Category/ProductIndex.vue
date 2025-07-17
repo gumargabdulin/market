@@ -17,7 +17,7 @@ import MainLayout from "@/Layouts/MainLayout.vue";
 import ProductItem from "@/Components/Client/Product/ProductItem.vue";
 
 export default {
-    name: "Index",
+    name: "ProductIndex",
     layout: MainLayout,
     components: {Link, ProductItem},
     props:{
