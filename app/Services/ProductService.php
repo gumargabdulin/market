@@ -3,22 +3,35 @@
 namespace App\Services;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 
 class ProductService
 {
     public static function store(array $data): Product
     {
-        $product = Product::create($data['product']);
-        ProductService::attachBatchParams($product, $data);
-        ImageService::storeBatch($product, $data);
+        try {
+            DB::beginTransaction();
+            $product = Product::create($data['product']);
+            ProductService::attachBatchParams($product, $data);
+            ImageService::storeBatch($product, $data);
+            DB::commit();
+        } catch (\Exception $exception) {
+            abort(500, 'store transaction error');
+            DB::rollBack();
+        }
         return $product;
     }
 
     public static function update(Product $product, array $data): Product
     {
-        $product->update($data['product']);
-        ProductService::syncBatchParams($product, $data);
-        ImageService::storeBatch($product, $data);
+        try {
+            $product->update($data['product']);
+            ProductService::syncBatchParams($product, $data);
+            ImageService::storeBatch($product, $data);
+        } catch (\Exception $exception) {
+            abort(500, 'update transaction error');
+            DB::rollBack();
+        }
         return $product->fresh();
     }
 
