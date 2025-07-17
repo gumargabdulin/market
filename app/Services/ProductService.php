@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Product;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ProductService
@@ -33,6 +34,11 @@ class ProductService
             DB::rollBack();
         }
         return $product->fresh();
+    }
+
+    public static function indexByCategories(array $categoryChildren): Collection
+    {
+        return Product::byCategories($categoryChildren)->get();
     }
 
     public static function attachBatchParams(Product $product, array $data): void

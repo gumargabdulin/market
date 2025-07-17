@@ -16,4 +16,15 @@ class CategoryService
         $category->update($data);
         return $category->fresh();
     }
+
+    public static function getCategoryChildren(Category $category): array
+    {
+        $arr = [];
+        $categoryChildren = Category::where('parent_id', $category->id)->get();
+        foreach ($categoryChildren as $categoryChild) {
+            $arr = array_merge($arr, self::getCategoryChildren($categoryChild));
+        }
+        $arr[] = $category;
+        return $arr;
+    }
 }
