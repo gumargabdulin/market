@@ -27,5 +27,10 @@ class Product extends Model
         return $this->hasMany(Product::class, 'parent_id', 'id');
     }
 
+    public function getPreviewImageUrlAttribute(): null|string
+    {
+        return $this->images()->first()->url ?? null;
+    }
+
 
 }

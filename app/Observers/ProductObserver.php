@@ -33,6 +33,9 @@ class ProductObserver
             $image->delete();
         }
         $product->params()->detach();
+        foreach ($product->children as $child) {
+            $child->delete();
+        }
         $product->children()->delete();
     }
 

@@ -1,42 +1,34 @@
 <template>
-
     <div>
         <div class="mb-4">
-            <Link :href="route('admin.products.create')"
-                  class="inline-block py-2 px-3 bg-sky-600 border border-sky-500 text-white">Добавить
-            </Link>
+            <Link :href="route('admin.products.create')" class="inline-block py-2 px-3 bg-sky-600 border border-sky-700 text-white">Добавить</Link>
         </div>
         <div>
-            <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-                <thead class="bg-gray-100">
+            <table class="border-collapse border border-gray-200 table-auto w-full text-sm">
+                <thead class="bg-gray-100 dark:bg-slate-800">
                 <tr>
-                    <th class="text-left px-6 py-3 text-gray-600 font-semibold uppercase text-sm">ID</th>
-                    <th class="text-left px-6 py-3 text-gray-600 font-semibold uppercase text-sm">Заголовок</th>
-                    <th class="text-left px-6 py-3 text-gray-600 font-semibold uppercase text-sm">Цена</th>
-                    <th class="text-left px-6 py-3 text-gray-600 font-semibold uppercase text-sm">Склад</th>
-                    <th class="text-left px-6 py-3 text-gray-600 font-semibold uppercase text-sm">Действие</th>
-                    <th class="text-left px-6 py-3 text-gray-600 font-semibold uppercase text-sm">Продукты</th>
+                    <th class="text-center border-b dark:border-slate-600 font-medium p-4 pb-3 text-slate-400 dark:text-slate-200 text-left">ID</th>
+                    <th class="text-center border-b dark:border-slate-600 font-medium p-4 pb-3 text-slate-400 dark:text-slate-200 text-left">Заголовок</th>
+                    <th class="text-center border-b dark:border-slate-600 font-medium p-4 pb-3 text-slate-400 dark:text-slate-200 text-left">Цена</th>
+                    <th class="text-center border-b dark:border-slate-600 font-medium p-4 pb-3 text-slate-400 dark:text-slate-200 text-left">Склад</th>
+                    <th class="text-center border-b dark:border-slate-600 font-medium p-4 pb-3 text-slate-400 dark:text-slate-200 text-left">Действия</th>
+                    <th class="text-center border-b dark:border-slate-600 font-medium p-4 pb-3 text-slate-400 dark:text-slate-200 text-left">Продукты</th>
                 </tr>
                 </thead>
-                <tbody v-if="products && products.length">
-                <template v-for="product in productsData"
-                          :key="product.id">
-                    <ProductItem @product_children_got="updateProductChildrenData" @product_deleted="updateProductsData" :product="product"></ProductItem>
-                    <template v-if="ProductChildrenData.length > 0" v-for="productChild in ProductChildrenData">
+                <tbody class="bg-white dark:bg-slate-800">
+                <template v-for="product in productsData">
+                    <ProductItem @product_deleted="updateProductsData" :product="product"></ProductItem>
+                    <template v-if="product.children" v-for="productChild in product.children">
                         <ProductItem @product_deleted="updateProductsData" :product="productChild"></ProductItem>
                     </template>
                 </template>
                 </tbody>
-                <tbody v-else>
-                <tr>
-                    <td colspan="2" class="px-6 py-4 text-center text-gray-500">Нет категорий</td>
-                </tr>
-                </tbody>
             </table>
-
         </div>
     </div>
+
 </template>
+
 <script>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import {Link} from "@inertiajs/vue3";
@@ -44,33 +36,39 @@ import ProductItem from "@/Components/Admin/Product/ProductItem.vue";
 
 export default {
     name: "Index",
+
     props: {
         products: Array
     },
+
     data() {
         return {
-            ProductChildrenData:[],
             productsData: this.products
         }
     },
+
     layout: AdminLayout,
+
     components: {
-        Link, ProductItem
+        Link,
+        ProductItem
     },
+
     methods: {
         updateProductsData(product) {
-            console.log(product)
-            this.productsData = this.productsData.filter(productData => productData.id !== product.id)
+            if (product.parent_id) {
+                this.productsData.forEach(productData => {
+                    if (productData.id === product.parent_id) {
+                        productData.children = productData.children.filter(child => child.id !== product.id)
+                    }
+                })
+                return
+            }
+            this.productsData = this.productsData.filter(productData => productData.id !== product.id);
         },
-        updateProductChildrenData(res) {
-            console.log(res)
-            this.ProductChildrenData = res.data
-        }
     }
 
 }
-
-
 </script>
 
 <style scoped>
