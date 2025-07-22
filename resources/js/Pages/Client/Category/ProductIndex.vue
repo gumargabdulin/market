@@ -7,16 +7,13 @@
                         <div>
                             <h3 class="text-white mb-2">{{ param.title }}</h3>
                         </div>
-                        <div>
-                            <div class="mb-2 flex items-center">
-                                <input class="mr-2" type="checkbox" value="check1" id="check1">
-                                <label class="text-sm text-gray-300" for="check1">Check1</label>
-                            </div>
+                        <div class="text-white">
+                            {{this.filters.checkbox[param.id]}}
                         </div>
                         <div>
-                            <div class="mb-2 flex items-center">
-                                <input class="mr-2" type="checkbox" value="check2" id="check1">
-                                <label class="text-sm text-gray-300" for="check2">Check1</label>
+                            <div v-for="value in param.param_values" class="mb-2 flex items-center">
+                                <input @change=setFilter(param,value) class="mr-2" type="checkbox" :value="value" :id="value">
+                                <label class="text-sm text-gray-300" :for="value">{{ value }}</label>
                             </div>
                         </div>
                     </div>
@@ -26,8 +23,8 @@
                         </div>
                         <div>
                             <div class="mb-2 flex items-center">
-                                <input class="border border-gray-200 p-2" type="text" placeholder="От">
-                                <input class="border border-gray-200 p-2" type="text" placeholder="До">
+                                <input v-model="filters.integer.from[param.id]" class="border border-gray-200 p-2" type="text" placeholder="От">
+                                <input v-model="filters.integer.to[param.id]" class="border border-gray-200 p-2" type="text" placeholder="До">
                             </div>
                         </div>
                     </div>
@@ -66,7 +63,34 @@ export default {
         breadcrumbs: Array,
         category: Object,
         params: Array
+    },
+    data() {
+        return {
+            filters:{
+                integer:{
+                    from:{},
+                    to:{},
+                },
+                select:{},
+                checkbox:{}
+            }
+        }
+    },
+    methods:{
+        setFilter(param,value){
+            if(this.filters.checkbox[param.id]){
+                this.toggleItem(this.filters.checkbox[param.id], value)
+                return
+            }
+            this.filters.checkbox[param.id]=[]
+            this.filters.checkbox[param.id].push(value)
+        },
+        toggleItem(arr, value){
+            let index = arr.indexOf(value)
+            index === -1 ? arr.push(value) : arr.splice(index, 1)
+        }
     }
+
 }
 </script>
 
