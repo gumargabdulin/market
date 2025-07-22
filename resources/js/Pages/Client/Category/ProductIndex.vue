@@ -3,7 +3,7 @@
         <nav class="p-4">
             <div>
                 <template v-for="param in params">
-                    <div v-if="param.filter_type==3" class="mb-4 pb-4 border-b border-gray-700">
+                    <div v-if="param.filter_type===3" class="mb-4 pb-4 border-b border-gray-700">
                         <div>
                             <h3 class="text-white mb-2">{{ param.title }}</h3>
                         </div>
@@ -17,7 +17,7 @@
                             </div>
                         </div>
                     </div>
-                    <div v-if="param.filter_type==1" class="mb-4 pb-4 border-b border-gray-700">
+                    <div v-if="param.filter_type===1" class="mb-4 pb-4 border-b border-gray-700">
                         <div>
                             <h3 class="text-white mb-2">{{ param.title }}</h3>
                         </div>
@@ -30,7 +30,7 @@
                     </div>
                 </template>
                 <div>
-                    <a href="#" class="block px-3 py-2 text-gray-300 bg-indigo-800 border border-indigo-900">Фильтр</a>
+                    <a @click.prevent="getPosts" href="#" class="block px-3 py-2 text-gray-300 bg-indigo-800 border border-indigo-900">Фильтр</a>
                 </div>
             </div>
         </nav>
@@ -44,7 +44,7 @@
             <span>{{ category.title }}</span>
         </div>
         <div class="grid grid-cols-3 gap-4">
-            <ProductItem v-for="product in products" :product="product"></ProductItem>
+            <ProductItem v-for="product in productData" :product="product"></ProductItem>
         </div>
     </article>
 </template>
@@ -66,6 +66,7 @@ export default {
     },
     data() {
         return {
+            productData:this.products,
             filters:{
                 integer:{
                     from:{},
@@ -88,6 +89,27 @@ export default {
         toggleItem(arr, value){
             let index = arr.indexOf(value)
             index === -1 ? arr.push(value) : arr.splice(index, 1)
+        },
+        getPosts(){
+            this.clean(this.filters.integer.from)
+            this.clean(this.filters.integer.to)
+
+            axios.get(route('client.categories.products.index', this.category.id), {
+                params:{
+                    filters:this.filters
+                }
+            }).then(
+                res => {
+                    this.productData=res.data
+                }
+            )
+        },
+        clean(obj){
+            Object.keys(obj).forEach(key =>{
+                if(!obj[key]){
+                    delete obj[key]
+                }
+            })
         }
     }
 

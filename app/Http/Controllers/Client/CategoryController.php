@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Client\Category\ProductIndexRequest;
 use App\Http\Resources\Category\CategoryResource;
 use App\Http\Resources\Param\ParamWithValuesResource;
 use App\Http\Resources\Product\ProductResource;
@@ -16,13 +17,18 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function productIndex(Category $category)
+    public function productIndex(Category $category, ProductIndexRequest $request)
     {
+        $data=$request->validated();
         $categoryChildren = CategoryService::getCategoryChildren($category);
+        $products = ProductResource::collection(ProductService::indexByCategories($categoryChildren, $data))->resolve();
+
+        if ($request->wantsJson()){
+            return $products;
+        }
         $params = ParamService::indexByCategories($categoryChildren);
         $params = ParamWithValuesResource::collection($params)->resolve();
         $breadcrumbs = CategoryResource::collection(CategoryService::getCategoryParents($category))->resolve();
-        $products = ProductResource::collection(ProductService::indexByCategories($categoryChildren))->resolve();
 
         $category = CategoryResource::make($category)->resolve();
         return inertia('Client/Category/ProductIndex', compact('products', 'breadcrumbs', 'category', 'params'));

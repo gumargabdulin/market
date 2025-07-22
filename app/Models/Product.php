@@ -37,7 +37,12 @@ class Product extends Model
     public function scopeByCategories(Builder $builder, Collection $categoryChildren): Builder
     {
         return $builder->whereIn('category_id', $categoryChildren->pluck('id'))
-            ->whereNull('parent_id');
+            ->whereNotNull('parent_id');
+    }
+
+    public function paramProduct(): HasMany
+    {
+        return $this->hasMany(ParamProduct::class, 'product_id', 'id');
     }
 
 

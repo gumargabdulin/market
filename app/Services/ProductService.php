@@ -17,8 +17,8 @@ class ProductService
             ImageService::storeBatch($product, $data);
             DB::commit();
         } catch (\Exception $exception) {
-            abort(500, 'store transaction error');
             DB::rollBack();
+            abort(500, 'store transaction error');
         }
         return $product;
     }
@@ -30,15 +30,47 @@ class ProductService
             ProductService::syncBatchParams($product, $data);
             ImageService::storeBatch($product, $data);
         } catch (\Exception $exception) {
-            abort(500, 'update transaction error');
             DB::rollBack();
+            abort(500, 'update transaction error');
         }
         return $product->fresh();
     }
 
-    public static function indexByCategories(Collection $categoryChildren): Collection
+    public static function indexByCategories(Collection $categoryChildren, array $data): Collection
     {
-        return Product::byCategories($categoryChildren)->get();
+        $products =  Product::byCategories($categoryChildren);
+
+        if(isset($data['filters']['integer']['from'])){
+            $products->whereHas('paramProduct', function ($query) use ($data) {
+                foreach ($data['filters']['integer']['from'] as $key => $value) {
+                    $query->where('param_id', $key)->where('value', '>=', $value);
+                }
+            });
+        }
+
+        if(isset($data['filters']['integer']['to'])){
+            $products->whereHas('paramProduct', function ($query) use ($data) {
+                foreach ($data['filters']['integer']['to'] as $key => $value) {
+                    $query->where('param_id', $key)->where('value', '>=', $value);
+                }
+            });
+        }
+
+        if(isset($data['filters']['select'])){
+            $products->whereHas('paramProduct', function ($query) use ($data) {
+                foreach ($data['filters']['select'] as $key => $value) {
+                    $query->where('param_id', $key)->where('value', $value);
+                }
+            });
+        }
+        if(isset($data['filters']['checkbox'])){
+            $products->whereHas('paramProduct', function ($query) use ($data) {
+                foreach ($data['filters']['checkbox'] as $key => $value) {
+                    $query->where('param_id', $key)->whereIn('value', $value);
+                }
+            });
+        }
+        return $products->distinct('parent_id')->get();
     }
 
     public static function attachBatchParams(Product $product, array $data): void
