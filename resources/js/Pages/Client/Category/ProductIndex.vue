@@ -95,9 +95,7 @@ export default {
             this.clean(this.filters.integer.to)
 
             axios.get(route('client.categories.products.index', this.category.id), {
-                params:{
-                    filters:this.filters
-                }
+                params:this.filters
             }).then(
                 res => {
                     this.productData=res.data
