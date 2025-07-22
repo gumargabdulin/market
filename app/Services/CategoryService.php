@@ -27,4 +27,15 @@ class CategoryService
         $arr[] = $category;
         return $arr;
     }
+
+    public static function getCategoryParents(Category $category): array
+    {
+        $arr = [];
+        if ($category->parent_id) {
+            $parentCategory = Category::find($category->parent_id);
+            $arr[] = $parentCategory;
+            $arr = array_merge($arr, self::getCategoryParents($parentCategory));
+        }
+        return $arr;
+    }
 }

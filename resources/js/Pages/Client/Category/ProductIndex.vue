@@ -5,6 +5,13 @@
         </nav>
     </aside>
     <article class="w-3/4 bg-gray-100 p-4">
+        <div class="mb-4">
+            <template v-for="breadcrumb in breadcrumbs">
+                <Link  :href="route('client.categories.products.index', breadcrumb.id)">{{breadcrumb.title}}</Link>
+                <span> / </span>
+            </template>
+                <span>{{category.title}}</span>
+        </div>
         <div class="grid grid-cols-3 gap-4">
             <ProductItem v-for="product in products" :product="product"></ProductItem>
         </div>
@@ -21,7 +28,9 @@ export default {
     layout: MainLayout,
     components: {Link, ProductItem},
     props:{
-        products:Array
+        products:Array,
+        breadcrumbs: Array,
+        category: Object
     }
 }
 </script>
