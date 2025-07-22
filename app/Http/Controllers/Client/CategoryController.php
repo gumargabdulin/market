@@ -16,8 +16,9 @@ class CategoryController extends Controller
     public function productIndex(Category $category)
     {
         $categoryChildren = CategoryService::getCategoryChildren($category);
-        $breadcrumbs = CategoryResource::collection(array_reverse(CategoryService::getCategoryParents($category)))->resolve() ;
+        $breadcrumbs = CategoryResource::collection(CategoryService::getCategoryParents($category))->resolve() ;
         $products = ProductResource::collection(ProductService::indexByCategories($categoryChildren))->resolve();
+
         $category = CategoryResource::make($category)->resolve();
         return inertia('Client/Category/ProductIndex', compact('products', 'breadcrumbs', 'category'));
     }
