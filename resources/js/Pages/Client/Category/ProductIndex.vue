@@ -30,7 +30,8 @@ export default {
     props:{
         products:Array,
         breadcrumbs: Array,
-        category: Object
+        category: Object,
+        params:Array
     }
 }
 </script>
