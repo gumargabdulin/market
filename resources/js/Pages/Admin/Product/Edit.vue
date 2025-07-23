@@ -14,6 +14,10 @@
                        placeholder="title">
             </div>
             <div class="mb-4">
+                <input type="text" v-model="entries.product.article" class="block border border-gray-700 p-2 w-1/4"
+                       placeholder="article">
+            </div>
+            <div class="mb-4">
                 <textarea type="text" v-model="entries.product.description"
                           class="block border border-gray-700 p-2 w-1/4" placeholder="Описание"></textarea>
             </div>
@@ -55,7 +59,7 @@
                         <img :src="image.url" :alt="product.title" class="mb-2">
                         <div class="text-center">
                             <a @click.prevent="deleteImage(image)" href="#"
-                               class="inline-block px-2 py-1 px-2 text-sm bg-red-400 text-gray-50 border border-red-600">Удалить</a>
+                               class="inline-block py-1 px-2 text-sm bg-red-400 text-gray-50 border border-red-600">Удалить</a>
                         </div>
                     </div>
                 </div>
@@ -91,7 +95,7 @@
             </div>
             <div class="mb-4">
                 <a href="#" @click.prevent="updateProduct"
-                   class="inline-block py-2 block bg-indigo-500 border border-b-indigo-400 p-2">Сохранить</a>
+                   class="inline-block py-2 bg-indigo-500 border border-b-indigo-400 p-2">Сохранить</a>
             </div>
         </div>
     </div>

@@ -43,7 +43,7 @@ class Product extends Model
             ->whereNotNull('parent_id');
     }
 
-    public function paramProduct(): HasMany
+    public function paramProducts(): HasMany
     {
         return $this->hasMany(ParamProduct::class, 'product_id', 'id');
     }

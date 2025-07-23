@@ -17,7 +17,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdminMiddleware::c
 
 
     Route::get('products/{product}/children', [ProductController::class, 'indexChild'])->name('products.children.index');
-    Route::get('products/{product}/child/create', [ProductController::class, 'createChild'])->name('products.children.create');
+    Route::post('products/{product}/replicate', [ProductController::class, 'replicate'])->name('products.replicate');
 
     Route::delete('images/{image}', [ImageController::class, 'destroy'])->name('images.destroy');
 

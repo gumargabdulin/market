@@ -21,4 +21,13 @@ class ImageService
    {
         Storage::disk('public')->delete($image->path);
    }
+
+   public static function replicateBatch(Product $product, $cloneProduct): void
+   {
+       foreach ($product->images as $image) {
+           $cloneImage = $image->replicate();
+           $cloneImage->product_id = $cloneProduct->id;
+           $cloneImage->push();
+       }
+   }
 }

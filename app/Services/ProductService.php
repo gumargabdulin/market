@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Product;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use function Laravel\Prompts\alert;
 
 class ProductService
 {
@@ -53,5 +54,23 @@ class ProductService
     {
         $product->params()->detach();
         ProductService::attachBatchParams($product, $data);
+    }
+
+    public static function replacate(Product $product): Product
+    {
+        try {
+            DB::beginTransaction();
+                $cloneProduct = $product->replicate();
+                $cloneProduct->article = fake()->randomNumber(7);
+                $cloneProduct->parent_id = $product->id;
+                $cloneProduct->push();
+                ImageService::replicateBatch($product, $cloneProduct);
+                ParamProductService::replicateBatch($product, $cloneProduct);
+            DB::commit();
+        }catch (\Exception $exception){
+            DB::rollBack();
+            abort(500, 'replicate transaction error');
+        }
+        return $cloneProduct;
     }
 }
