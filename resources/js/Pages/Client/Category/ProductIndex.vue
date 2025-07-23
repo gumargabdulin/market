@@ -36,13 +36,7 @@
         </nav>
     </aside>
     <article class="w-3/4 bg-gray-100 p-4">
-        <div class="mb-4">
-            <template v-for="breadcrumb in breadcrumbs">
-                <Link :href="route('client.categories.products.index', breadcrumb.id)">{{ breadcrumb.title }}</Link>
-                <span> / </span>
-            </template>
-            <span>{{ category.title }}</span>
-        </div>
+        <Breadcrumb :breadcrumbs="breadcrumbs" :current="category.title" />
         <div class="grid grid-cols-3 gap-4">
             <ProductItem v-for="product in productData" :product="product"></ProductItem>
         </div>
@@ -53,16 +47,17 @@
 import {Link} from "@inertiajs/vue3";
 import MainLayout from "@/Layouts/MainLayout.vue";
 import ProductItem from "@/Components/Client/Product/ProductItem.vue";
+import Breadcrumb from "@/Pages/Client/Category/Breadcrumb.vue";
 
 export default {
     name: "ProductIndex",
     layout: MainLayout,
-    components: {Link, ProductItem},
+    components: {Link, ProductItem, Breadcrumb},
     props: {
         products: Array,
         breadcrumbs: Array,
         category: Object,
-        params: Array
+        params: Array,
     },
     data() {
         return {

@@ -1,7 +1,7 @@
 
 <template>
     <div class="p-4 border border-gray-200 bg-white">
-        <h3>{{product.title}}</h3>
+        <Link :href="route('client.products.show', product.id)"><h3>{{product.title}}</h3></Link>
         <img :src="product.preview_image_url" :alt="product.title" class="w-[200px] h-[200px] object-cover">
         <div class="flex items-center justify-between">
             <p>{{product.price}}</p>
@@ -14,10 +14,14 @@
 </template>
 
 <script>
+import {Link} from "@inertiajs/vue3";
 export default {
     name: "ProductItem",
     props:{
         product:Array
+    },
+    components:{
+        Link
     }
 }
 </script>
