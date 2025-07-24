@@ -1,6 +1,6 @@
 <template>
     <article class="w-full max-w-6xl mx-auto px-8 py-6 bg-white rounded shadow-sm">
-        <Breadcrumb :breadcrumbs="breadcrumbs" :current="product.title" />
+        <Breadcrumb :breadcrumbs="breadcrumbs" :current="product.title"/>
 
         <div class="flex flex-wrap gap-10 mt-6">
             <div class="flex gap-4">
@@ -66,10 +66,14 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <div class="cursor-pointer">+</div>
-                    <input type="number" min="1" value="1" class="w-20 border rounded px-2 py-1"/>
-                    <div class="cursor-pointer">+</div>
-                    <button @click.prevent="storeCarts" type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded">Купить</button>
+                    <div v-if="cartId">
+                        <div class="cursor-pointer" @click.prevent="cart.qty >1 ? cart.qty -- : ''; updateCart()">-</div>
+                        <input type="number" min="1" :value="cart.qty" class="w-20 border rounded px-2 py-1"/>
+                        <div class="cursor-pointer" @click.prevent="cart.qty++; updateCart()">+</div>
+                    </div>
+                    <button v-if="!cartId" @click.prevent="storeCarts" type="submit"
+                            class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded">Купить
+                    </button>
                 </div>
             </div>
 
@@ -112,16 +116,14 @@
 </template>
 
 
-
-
 <script>
 import MainLayout from "@/Layouts/MainLayout.vue";
-import { Link } from "@inertiajs/vue3";
+import {Link} from "@inertiajs/vue3";
 import Breadcrumb from "@/Pages/Client/Category/Breadcrumb.vue";
 
 export default {
     name: "Show",
-    components: { Link, Breadcrumb },
+    components: {Link, Breadcrumb},
     layout: MainLayout,
 
     props: {
@@ -131,21 +133,30 @@ export default {
     },
     data() {
         return {
-            selectedImage: { url: this.product.preview_image_url },
-            cart:{
+            selectedImage: {url: this.product.preview_image_url},
+            cart: {
                 qty: 1,
-                product_id:this.product.id
-            }
+                product_id: this.product.id
+            },
+            cartId: null,
         }
     },
-    methods:{
-        storeCarts(){
-            axios.post(route('client.carts.store'), this.cart).
-            then(
-                res => {
-                    console.log(res)
-                }
-            )
+    methods: {
+        storeCarts() {
+            axios.post(route('client.carts.store'), this.cart)
+                .then(
+                    res => {
+                        this.cartId=res.data.id
+                    }
+                )
+        },
+        updateCart() {
+            axios.patch(route('client.carts.update', this.cartId), this.cart)
+                .then(
+                    res => {
+                        console.log(res)
+                    }
+                )
         }
     }
 }
