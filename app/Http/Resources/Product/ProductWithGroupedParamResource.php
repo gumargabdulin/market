@@ -27,6 +27,7 @@ class ProductWithGroupedParamResource extends JsonResource
             'old_price' => $this->old_price,
             'category_id' => $this->category_id,
             'product_group_id' => $this->product_group_id,
+            'group_products' => ProductResource::collection($this->group_products)->resolve(),
             'qty' => $this->qty,
             'images' => ImageResource::collection($this->images)->resolve(),
             'preview_image_url' => $this->preview_image_url,

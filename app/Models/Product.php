@@ -38,9 +38,29 @@ class Product extends Model
         return $this->hasMany(Product::class, 'parent_id', 'id');
     }
 
+    public function siblingProducts(): HasMany
+    {
+        return $this->parent->children()->whereNot('id', $this->id);
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Product::class, 'parent_id', 'id');
+    }
+
+    public function productGroup(): BelongsTo
+    {
+        return $this->belongsTo(ProductGroup::class);
+    }
+
     public function getPreviewImageUrlAttribute(): null|string
     {
         return $this->images()->first()->url ?? null;
+    }
+
+    public function getGroupProductsAttribute(): Collection
+    {
+        return $this->productGroup->products()->whereNot('parent_id', $this->parent_id)->distinct('parent_id')->get();
     }
 
     public function scopeByCategories(Builder $builder, Collection $categoryChildren): Builder

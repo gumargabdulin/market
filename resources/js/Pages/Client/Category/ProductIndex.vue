@@ -2,6 +2,39 @@
     <aside class="w-1/4 bg-gray-600 min-h-screen">
         <nav class="p-4">
             <div>
+                <div class="mb-4">
+                    <div>
+                        <Link :href="route('client.categories.index')"><h3 class="text-xl font-semibold text-gray-800 mb-2">Категории</h3></Link>
+                    </div>
+                    <div v-if="breadcrumbs.length > 0" class="flex flex-col gap-2">
+                        <!-- Хлебные крошки (breadcrumbs) -->
+                        <div v-if="breadcrumbs.length > 0" class="flex flex-col gap-2 mb-4">
+                            <Link
+                                v-for="breadcrumb in breadcrumbs"
+                                :key="breadcrumb.id"
+                                :href="route('client.categories.products.index', breadcrumb.id)"
+                                class="flex items-center text-gray-700 hover:text-gray-900 transition"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                                {{ breadcrumb.title }}
+                            </Link>
+                        </div>
+
+                        <!-- Дочерние категории -->
+                        <div v-if="categoryChildren.length > 0" class="flex flex-col gap-2">
+                            <Link
+                                v-for="categoryChild in categoryChildren"
+                                :key="categoryChild.id"
+                                :href="route('client.categories.products.index', categoryChild.id)"
+                                class="text-gray-700 hover:text-gray-900 transition"
+                            >
+                                {{ categoryChild.title }}
+                            </Link>
+                        </div>
+                    </div>
+                </div>
                 <template v-for="param in params">
                     <div v-if="param.filter_type===3" class="mb-4 pb-4 border-b border-gray-700">
                         <div>
@@ -48,9 +81,15 @@ import {Link} from "@inertiajs/vue3";
 import MainLayout from "@/Layouts/MainLayout.vue";
 import ProductItem from "@/Components/Client/Product/ProductItem.vue";
 import Breadcrumb from "@/Pages/Client/Category/Breadcrumb.vue";
+import breadcrumb from "./Breadcrumb.vue";
 
 export default {
     name: "ProductIndex",
+    computed: {
+        breadcrumb() {
+            return breadcrumb
+        }
+    },
     layout: MainLayout,
     components: {Link, ProductItem, Breadcrumb},
     props: {
@@ -58,6 +97,7 @@ export default {
         breadcrumbs: Array,
         category: Object,
         params: Array,
+        categoryChildren: Array,
     },
     data() {
         return {
