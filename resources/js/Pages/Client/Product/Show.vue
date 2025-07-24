@@ -3,7 +3,6 @@
         <Breadcrumb :breadcrumbs="breadcrumbs" :current="product.title" />
 
         <div class="flex flex-wrap gap-10 mt-6">
-            <!-- Галерея -->
             <div class="flex gap-4">
                 <div class="flex flex-col gap-2 w-24">
                     <img
@@ -23,8 +22,6 @@
                     />
                 </div>
             </div>
-
-            <!-- Информация о продукте -->
             <div class="flex flex-col justify-between min-w-[300px] flex-1 gap-4">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-800 mb-2">{{ product.title }}</h1>
@@ -41,8 +38,6 @@
 
                     <p class="text-gray-700 mb-6">{{ product.discription }}</p>
                 </div>
-
-                <!-- Параметры товара -->
                 <div
                     v-if="paramProducts.length > 0"
                     class="bg-gray-50 border rounded px-4 py-3"
@@ -70,20 +65,11 @@
                     </div>
                 </div>
 
-                <!-- Купить -->
-                <div class="flex items-center gap-3">
-                    <input
-                        type="number"
-                        min="1"
-                        value="1"
-                        class="w-20 border rounded px-2 py-1"
-                    />
-                    <button
-                        type="submit"
-                        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded"
-                    >
-                        Купить
-                    </button>
+                <div class="flex items-center gap-4">
+                    <div class="cursor-pointer">+</div>
+                    <input type="number" min="1" value="1" class="w-20 border rounded px-2 py-1"/>
+                    <div class="cursor-pointer">+</div>
+                    <button @click.prevent="storeCarts" type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded">Купить</button>
                 </div>
             </div>
 
@@ -145,12 +131,26 @@ export default {
     },
     data() {
         return {
-            selectedImage: { url: this.product.preview_image_url }
+            selectedImage: { url: this.product.preview_image_url },
+            cart:{
+                qty: 1,
+                product_id:this.product.id
+            }
+        }
+    },
+    methods:{
+        storeCarts(){
+            axios.post(route('client.carts.store'), this.cart).
+            then(
+                res => {
+                    console.log(res)
+                }
+            )
         }
     }
 }
 </script>
 
 <style scoped>
-/* Всё через Tailwind, кастомных стилей не нужно */
+
 </style>

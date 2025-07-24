@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProductUserCard extends Model
+class Cart extends Model
 {
-    //
+    protected $table = 'product_user_cards';
+
 }
