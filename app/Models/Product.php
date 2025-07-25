@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 
 
@@ -87,6 +88,11 @@ class Product extends Model
                 'value' => $param->pluck('pivot.value')->toArray(),
             ];
         })->toArray();
+    }
+
+    public function cart(): HasOne
+    {
+        return $this->hasOne(Cart::class)->where('user_id',auth()->user()->id);
     }
 
 

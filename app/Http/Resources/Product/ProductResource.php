@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Product;
 
+use App\Http\Resources\Cart\CartResource;
 use App\Http\Resources\Image\ImageResource;
 use App\Http\Resources\Param\ParamResource;
 use App\Http\Resources\Param\ParamWithPivotValueResource;
@@ -28,6 +29,7 @@ class ProductResource extends JsonResource
             'category_id' => $this->category_id,
             'product_group_id' => $this->product_group_id,
             'qty' => $this->qty,
+            'cart' => CartResource::make($this->cart)->resolve(),
             'images' => ImageResource::collection($this->images)->resolve(),
             'preview_image_url' => $this->preview_image_url,
             'params' => ParamWithPivotValueResource::collection($this->params)->resolve()
