@@ -1,0 +1,53 @@
+<template>
+    <div class="flex items-center gap-4">
+        <div v-if="cartId">
+            <div class="cursor-pointer" @click.prevent="cart.qty >1 ? cart.qty -- : ''; updateCart()">-</div>
+            <input type="number" min="1" :value="cart.qty" class="w-20 border rounded px-2 py-1"/>
+            <div class="cursor-pointer" @click.prevent="cart.qty++; updateCart()">+</div>
+        </div>
+        <button v-if="!cartId" @click.prevent="storeCarts" type="submit"
+                class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded">Купить
+        </button>
+    </div>
+</template>
+
+<script>
+export default {
+    name: "CreateOrUpdateCart",
+    props: {
+        product: Object
+    },
+    data() {
+        return {
+            cart: {
+                qty: 1,
+                product_id: this.product.id
+            },
+            cartId: null,
+        }
+    },
+    methods: {
+        storeCarts() {
+            axios.post(route('client.carts.store'), this.cart)
+                .then(
+                    res => {
+                        this.cartId = res.data.id
+                    }
+                )
+        },
+        updateCart() {
+            axios.patch(route('client.carts.update', this.cartId), this.cart)
+                .then(
+                    res => {
+                        console.log(res)
+                    }
+                )
+        }
+    }
+}
+</script>
+
+
+<style scoped>
+
+</style>

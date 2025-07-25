@@ -8,20 +8,21 @@
             <p>{{product.old_price}}</p>
         </div>
         <div>
-            <a href="#" class="block p-4 bg-indigo-600 text-white text-center">Купить</a>
+            <CreateOrUpdateCart :product="product"></CreateOrUpdateCart>
         </div>
     </div>
 </template>
 
 <script>
 import {Link} from "@inertiajs/vue3";
+import CreateOrUpdateCart from "@/Components/Client/Cart/CreateOrUpdateCart.vue";
 export default {
     name: "ProductItem",
     props:{
         product:Array
     },
     components:{
-        Link
+        Link, CreateOrUpdateCart
     }
 }
 </script>

@@ -64,20 +64,9 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="flex items-center gap-4">
-                    <div v-if="cartId">
-                        <div class="cursor-pointer" @click.prevent="cart.qty >1 ? cart.qty -- : ''; updateCart()">-</div>
-                        <input type="number" min="1" :value="cart.qty" class="w-20 border rounded px-2 py-1"/>
-                        <div class="cursor-pointer" @click.prevent="cart.qty++; updateCart()">+</div>
-                    </div>
-                    <button v-if="!cartId" @click.prevent="storeCarts" type="submit"
-                            class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded">Купить
-                    </button>
-                </div>
+                <CreateOrUpdateCart :product="product"></CreateOrUpdateCart>
             </div>
 
-            <!-- Варианты группы -->
             <div class="w-48">
                 <h3 class="text-lg font-medium mb-2 text-gray-700">Другие варианты</h3>
                 <div class="flex flex-col gap-3">
@@ -120,10 +109,10 @@
 import MainLayout from "@/Layouts/MainLayout.vue";
 import {Link} from "@inertiajs/vue3";
 import Breadcrumb from "@/Pages/Client/Category/Breadcrumb.vue";
-
+import CreateOrUpdateCart from "@/Components/Client/Cart/CreateOrUpdateCart.vue";
 export default {
     name: "Show",
-    components: {Link, Breadcrumb},
+    components: {Link, Breadcrumb, CreateOrUpdateCart},
     layout: MainLayout,
 
     props: {
@@ -134,31 +123,9 @@ export default {
     data() {
         return {
             selectedImage: {url: this.product.preview_image_url},
-            cart: {
-                qty: 1,
-                product_id: this.product.id
-            },
-            cartId: null,
         }
     },
-    methods: {
-        storeCarts() {
-            axios.post(route('client.carts.store'), this.cart)
-                .then(
-                    res => {
-                        this.cartId=res.data.id
-                    }
-                )
-        },
-        updateCart() {
-            axios.patch(route('client.carts.update', this.cartId), this.cart)
-                .then(
-                    res => {
-                        console.log(res)
-                    }
-                )
-        }
-    }
+
 }
 </script>
 
