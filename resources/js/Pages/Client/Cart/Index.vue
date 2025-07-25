@@ -15,12 +15,18 @@
                 <tbody>
                 <tr v-for="cart in cartsData">
                     <td class="px-6 py-4 border-b border-gray-200 text-gray-800">{{ cart.id }}</td>
-                    <td class="px-6 py-4 border-b border-gray-200 text-gray-800">{{cart.product_title}}</td>
+                    <td class="px-6 py-4 border-b border-gray-200 text-gray-800">{{ cart.product_title }}</td>
                     <td class="px-6 py-4 border-b border-gray-200 text-gray-800">
                         <img :src="cart.product_image" class="w-30">
                     </td>
-                    <td class="px-6 py-4 border-b border-gray-200 text-gray-800">{{cart.qty}}</td>
-                    <td class="px-6 py-4 border-b border-gray-200 text-gray-800">{{cart.total_sum}}</td>
+                    <td class="px-6 py-4 border-b border-gray-200 text-gray-800">
+                        <div class="cursor-pointer" @click.prevent="cart.qty >1 ? cart.qty -- : ''; updateCart(cart)">
+                            -
+                        </div>
+                        <input type="number" min="1" :value="cart.qty" class="w-20 border rounded px-2 py-1"/>
+                        <div class="cursor-pointer" @click.prevent="cart.qty++; updateCart(cart)">+</div>
+                    </td>
+                    <td class="px-6 py-4 border-b border-gray-200 text-gray-800">{{ cart.total_sum }}</td>
                     <td class="px-6 py-4 border-b border-gray-200 text-gray-800"></td>
                 </tr>
                 </tbody>
@@ -30,22 +36,31 @@
 </template>
 
 
-
-
 <script>
 import MainLayout from "@/Layouts/MainLayout.vue";
-import { Link } from "@inertiajs/vue3";
+import {Link} from "@inertiajs/vue3";
+
 export default {
     name: "Index",
-    components: { Link },
+    components: {Link},
     layout: MainLayout,
 
     props: {
-        carts:Array
+        carts: Array
     },
     data() {
         return {
-            cartsData:this.carts
+            cartsData: this.carts
+        }
+    },
+    methods: {
+        updateCart(cart) {
+            axios.patch(route('client.carts.update', cart.id), {qty: cart.qty})
+                .then(
+                    res => {
+                        console.log(res)
+                    }
+                )
         }
     }
 }
