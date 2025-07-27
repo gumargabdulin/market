@@ -39,7 +39,8 @@ export default {
             axios.patch(route('client.carts.update', this.product.cart.id), this.cart)
                 .then(
                     res => {
-                        console.log(res)
+                        console.log(res.data)
+                        this.$page.props.auth.user.carts_total_sum = res.data.carts_total_sum
                     }
                 )
         }

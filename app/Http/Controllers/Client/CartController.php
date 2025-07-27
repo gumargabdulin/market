@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\Cart\StoreRequest;
 use App\Http\Requests\Client\Cart\UpdateRequest;
 use App\Http\Resources\Cart\CartResource;
+use App\Http\Resources\Cart\CartWithProductAndTotalSumResource;
 use App\Http\Resources\Cart\CartWithProductResource;
 use App\Models\Cart;
 use App\Services\CartService;
@@ -32,7 +33,7 @@ class CartController extends Controller
     {
         $data = $request->validated();
         $cart = CartService::update($cart, $data);
-        return CartWithProductResource::make($cart)->resolve();
+        return CartWithProductAndTotalSumResource::make($cart)->resolve();
     }
 
     public function destroy(Cart $cart)
