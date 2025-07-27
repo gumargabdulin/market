@@ -31,7 +31,9 @@ export default {
             axios.post(route('client.carts.store'), this.cart)
                 .then(
                     res => {
+                        console.log(res.data)
                         this.product.cart = res.data
+                        this.$page.props.auth.user.carts_total_sum = res.data.carts_total_sum
                     }
                 )
         },
@@ -39,7 +41,7 @@ export default {
             axios.patch(route('client.carts.update', this.product.cart.id), this.cart)
                 .then(
                     res => {
-                        console.log(res.data)
+
                         this.$page.props.auth.user.carts_total_sum = res.data.carts_total_sum
                     }
                 )

@@ -26,7 +26,7 @@ class CartController extends Controller
 
         $cart = $request->validated();
         $cart = CartService::store($cart);
-        return CartResource::make($cart)->resolve();
+        return CartWithProductAndTotalSumResource::make($cart)->resolve();;
     }
 
     public function update(Cart $cart, UpdateRequest $request)
